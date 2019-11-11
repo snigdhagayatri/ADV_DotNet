@@ -118,7 +118,7 @@
 
         function purchaseGrocery(id, callback) {
             $.ajax({
-                url: 'api/GroceryList/purchase' + id,
+                url: 'api/GroceryLists/purchase/' + id,
                 dataType: 'json',
                 contentType: 'application/json',
                 method: 'PUT',
@@ -145,7 +145,7 @@
         });
 
         $("#GroceryList").on('click', 'button.grocerylist-save', function () {
-            var id = $(this).parents("li").attr('item-id');
+            var id = $(this).parents("li").attr('grocerylist-id');
             purchaseGrocery(id, function () {
                 $(this).parents("li").find('.purchase-form').hide();
             });

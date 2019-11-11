@@ -102,8 +102,8 @@ namespace GroceryListManager.Controllers
             return _context.GroceryList.Any(e => e.Id == id);
         }
 
-        [HttpPut("api/GroceryList/purchase/{id}")]
-        public ActionResult<GroceryList> BuyItem([FromRoute]int id)
+        [HttpPut("purchase/{id}")]
+        public ActionResult<GroceryList> Purchase([FromRoute]int id)
         {
             if (!ModelState.IsValid)
             {
