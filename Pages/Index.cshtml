@@ -67,11 +67,21 @@
             $("#GroceryList").empty();
             $.each(groceries, function (index, item) {
                 var li = $('<li grocerylist-id="' + item.id + '"></li>');
-                $(li).text(item.name + ' - ' + item.price);
+                if (item.isPurchased == true) {
+                    var result = "Purchased";
+                }
+                else {
+                    var result = "Not Purchased";
+                }
+                $(li).text(item.name + ' - ' + item.price + ': ' + result);
+                $(li).append(' <a href="#" class="pull-right grocerylist-delete">Delete</a>')
                 $(li).append('<span class="pull-right">&nbsp;|&nbsp;</span>');
                 $(li).append('<a href="#" class="pull-right grocerylist-purchase">Purchase</a>');
-                $(li).append(' <a href="#" class="pull-right grocerylist-delete">Delete</a>')
-            
+                
+                var purchaseForm = $('<div style="display: none;" class="row purchase-form"></div>');
+                var purchasebutton = $('<div class="col-sm-4"><button class="btn btn-primary grocerylist-save">Purchase!</button> <button class="btn btn-default grocerylist-cancel">Cancel</button></div>');
+                $(purchaseForm).append(purchasebutton);
+                $(li).append(purchaseForm);
                 $("#GroceryList").append(li);
             });
         }
@@ -106,29 +116,40 @@
         });
         }
 
-        function purchaseGrocery(id, ) {
+        function purchaseGrocery(id, callback) {
             $.ajax({
-                url: '/api/GroceryLists/purchase' + id,
+                url: 'api/GroceryList/purchase' + id,
                 dataType: 'json',
                 contentType: 'application/json',
                 method: 'PUT',
+                //data: JSON.stringify(requestData)
             }).done(function (responseData, status, xhr) {
-                loadData();
+                loadData(); // RELOAD THE BOOK DATA
+                if (callback) {
+                    callback();
+                }
             }).fail(function (xhr, status, error) {
-                alert("There was an error saving your grocery");
+                alert("There was an error saving your list item");
             });
         }
 
-        $("#GroceryList").on('click', 'a.grocerylist-purchase', function() {
-            var id = $(this).parents("li").attr('grocerylist-id');
-            console.log(id);
-            if (confirm("Do you want to mark this item purchased in the GroceryList?")) {
-                purchaseItem(id);
-            }
+         $("#GroceryList").on('click', 'a.grocerylist-purchase', function () {
+            $(this).parents("li").find('.purchase-form').show();
             return false;
-        return false;
         });
 
 
+        $("#GroceryList").on('click', 'button.grocerylist-cancel', function () {
+            $(this).parents("li").find('.purchase-form').hide();
+            return false;
+        });
+
+        $("#GroceryList").on('click', 'button.grocerylist-save', function () {
+            var id = $(this).parents("li").attr('item-id');
+            purchaseGrocery(id, function () {
+                $(this).parents("li").find('.purchase-form').hide();
+            });
+            return false;
+        });
     </script>
 }

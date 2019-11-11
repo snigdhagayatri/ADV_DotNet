@@ -102,8 +102,8 @@ namespace GroceryListManager.Controllers
             return _context.GroceryList.Any(e => e.Id == id);
         }
 
-        [HttpPut("loan/{id}")]
-        public ActionResult<GroceryList> LoanBook([FromRoute]int id, [FromBody] GroceryList loan)
+        [HttpPut("api/GroceryList/purchase/{id}")]
+        public ActionResult<GroceryList> BuyItem([FromRoute]int id)
         {
             if (!ModelState.IsValid)
             {
